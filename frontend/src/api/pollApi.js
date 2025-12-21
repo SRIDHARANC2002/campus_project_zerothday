@@ -23,8 +23,17 @@ api.interceptors.request.use((config) => {
 export const pollApi = {
   // Get poll categories (public)
   getCategories: async () => {
-    const response = await api.get('/polls/categories');
-    return response.data;
+    try {
+      const response = await api.get('/polls/categories');
+      return response.data;
+    } catch (error) {
+      // If the endpoint is not available (404) return an empty categories list to avoid noisy errors
+      if (error.response && error.response.status === 404) {
+        console.warn('Poll categories endpoint not found; proceeding with empty categories.');
+        return { categories: [] };
+      }
+      throw error;
+    }
   },
 
   // Get poll statistics (public)

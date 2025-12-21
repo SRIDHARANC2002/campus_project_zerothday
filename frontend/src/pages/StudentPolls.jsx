@@ -48,15 +48,37 @@ const StudentPolls = () => {
   const fetchPolls = useCallback(async () => {
     try {
       setLoading(true);
-      const [pollsResponse, categoriesResponse] = await Promise.all([
-        pollApi.getActivePolls({ category: selectedCategory }),
-        pollApi.getCategories()
-      ]);
 
-      setPolls(pollsResponse.polls || []);
-      setCategories(categoriesResponse.categories || []);
+      // Fetch polls
+      let pollsResponse;
+      try {
+        pollsResponse = await pollApi.getActivePolls({ category: selectedCategory });
+      } catch (err) {
+        console.error('Error fetching polls list:', err);
+        setError('Failed to load polls');
+        setPolls([]);
+        return;
+      }
+
+      // Normalize polls response: backend may return either an array or an object { polls: [...] }
+      const pollsData = Array.isArray(pollsResponse)
+        ? pollsResponse
+        : (pollsResponse.polls || pollsResponse || []);
+
+      // Fetch categories (optional)
+      let categoriesData = [];
+      try {
+        const categoriesResponse = await pollApi.getCategories();
+        categoriesData = categoriesResponse.categories || [];
+      } catch (err) {
+        // If categories endpoint is not available (404) or errors, continue without categories
+        console.warn('Could not fetch poll categories, proceeding without them:', err.message || err);
+      }
+
+      setPolls(pollsData);
+      setCategories(categoriesData);
     } catch (err) {
-      console.error('Error fetching polls:', err);
+      console.error('Unexpected error fetching polls:', err);
       setError('Failed to load polls');
     } finally {
       setLoading(false);

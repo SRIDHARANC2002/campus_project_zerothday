@@ -500,6 +500,8 @@ const DashboardStudent = () => {
                               </Box>
                             </Box>
                           }
+                          primaryTypographyProps={{ component: 'div' }}
+                          secondaryTypographyProps={{ component: 'div' }}
                         />
                       </ListItem>
                       {index < curatedFeed.hackathons.length - 1 && <Divider />}
@@ -570,6 +572,8 @@ const DashboardStudent = () => {
                               </Box>
                             </Box>
                           }
+                          primaryTypographyProps={{ component: 'div' }}
+                          secondaryTypographyProps={{ component: 'div' }}
                         />
                       </ListItem>
                       {index < curatedFeed.internships.length - 1 && <Divider />}
@@ -622,6 +626,8 @@ const DashboardStudent = () => {
                               </Typography>
                             </Box>
                           }
+                          primaryTypographyProps={{ component: 'div' }}
+                          secondaryTypographyProps={{ component: 'div' }}
                         />
                       </ListItem>
                       {index < curatedFeed.techTrends.length - 1 && <Divider />}
@@ -685,6 +691,8 @@ const DashboardStudent = () => {
                               />
                             </Box>
                           }
+                          primaryTypographyProps={{ component: 'div' }}
+                          secondaryTypographyProps={{ component: 'div' }}
                         />
                       </ListItem>
                       {index < curatedFeed.learningResources.length - 1 && <Divider />}
@@ -735,6 +743,8 @@ const DashboardStudent = () => {
                               />
                             </Box>
                           }
+                          primaryTypographyProps={{ component: 'div' }}
+                          secondaryTypographyProps={{ component: 'div' }}
                         />
                       </ListItem>
                       {index < curatedFeed.careerTips.length - 1 && <Divider />}

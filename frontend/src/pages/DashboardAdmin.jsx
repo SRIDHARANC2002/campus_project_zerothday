@@ -1,18 +1,14 @@
 import React, { useState, useContext } from 'react';
 import { EventContext } from './EventContext';
 import './AdminDashboard.css';
-import axios from 'axios';
+import { authApi } from '../api/skillApi';
 import { School } from '@mui/icons-material'; // Added icons for new cards
 
 const registerStudent = async (studentData) => {
   try {
-    const response = await axios.post('http://localhost:5000/api/users/student/register', studentData, {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-    console.log('Student registered:', response.data);
-    return response.data;
+    const response = await authApi.registerStudent(studentData);
+    console.log('Student registered:', response);
+    return response;
   } catch (error) {
     console.error('Registration failed:', error.response?.data || error.message);
     throw error;
@@ -49,8 +45,9 @@ const Grid = ({ children, container, item, spacing = 0, className = '' }) => {
 };
 
 const Typography = ({ children, variant = 'body1', component, gutterBottom, color, className = '' }) => {
-  const Tag = component || (variant.startsWith('h') ? variant : 'p');
-
+  // Use <div> as the default container for non-heading variants to avoid invalid
+  // nesting (<p> cannot contain <div>), and allow block children inside.
+  const Tag = component || (variant.startsWith('h') ? variant : 'div');
 
   return (
     <Tag className={`typography ${variant} ${gutterBottom ? 'gutter-bottom' : ''} ${color ? `color-${color}` : ''} ${className}`}>

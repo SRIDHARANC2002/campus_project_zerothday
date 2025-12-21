@@ -5,8 +5,8 @@ import { authApi } from '../api/skillApi';
 
 const AdminLogin = () => {
   const [formData, setFormData] = useState({
-    email: 'admin@.com',
-    password: 'admin'
+    email: '',
+    password: ''
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -55,7 +55,7 @@ const AdminLogin = () => {
   return (
     <Box sx={{ width: '100%' }}>
       {/* Admin Login Form */}
-      <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+      <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }} autoComplete="off">
         {error && (
           <Alert severity="error" sx={{ mb: 2 }}>
             {error}
@@ -68,7 +68,7 @@ const AdminLogin = () => {
           id="email"
           label="Email Address"
           name="email"
-          autoComplete="email"
+          autoComplete="off"
           autoFocus
           value={formData.email}
           onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
@@ -81,7 +81,8 @@ const AdminLogin = () => {
           label="Password"
           type="password"
           id="admin-password"
-          autoComplete="current-password"
+          autoComplete="new-password"
+          inputProps={{ autoComplete: 'new-password' }}
           value={formData.password}
           onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
         />
