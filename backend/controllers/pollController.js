@@ -5,9 +5,25 @@ const Poll = require('../models/Poll');
 // @access  Private (Student)
 const getActivePolls = async (req, res) => {
     try {
-        const polls = await Poll.find({ isActive: true });
-        // Filter out polls the user has already voted on if needed, or handle in frontend
-        res.json(polls);
+        const filter = { isActive: true };
+        if (req.query.category) {
+            filter.category = req.query.category;
+        }
+        const polls = await Poll.find(filter);
+        // Return as an object to match frontend expectations
+        res.json({ polls });
+    } catch (error) {
+        res.status(500).json({ message: 'Server Error' });
+    }
+};
+
+// @desc    Get poll categories (public)
+// @route   GET /api/polls/categories
+// @access  Public
+const getPollCategories = async (req, res) => {
+    try {
+        const categories = await Poll.distinct('category');
+        res.json({ categories });
     } catch (error) {
         res.status(500).json({ message: 'Server Error' });
     }
@@ -144,6 +160,7 @@ const getPollStats = async (req, res) => {
 
 module.exports = {
     getActivePolls,
+    getPollCategories,
     getAllPollsForAdmin,
     createPoll,
     voteOnPoll,

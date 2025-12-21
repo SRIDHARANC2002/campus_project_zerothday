@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {
     getActivePolls,
+    getPollCategories,
     getAllPollsForAdmin,
     createPoll,
     voteOnPoll,
@@ -13,6 +14,7 @@ const { protect, admin } = require('../middleware/authMiddleware');
 
 // Public routes
 router.get('/stats', getPollStats);
+router.get('/categories', getPollCategories);
 
 // Student routes
 router.get('/active', protect, getActivePolls);
