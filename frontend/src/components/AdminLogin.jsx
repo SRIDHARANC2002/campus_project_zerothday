@@ -5,7 +5,7 @@ import { authApi } from '../api/skillApi';
 
 const AdminLogin = () => {
   const [formData, setFormData] = useState({
-    email: 'admin',
+    email: 'admin@.com',
     password: 'admin'
   });
   const [error, setError] = useState('');
@@ -30,13 +30,17 @@ const AdminLogin = () => {
     try {
       const response = await authApi.loginAdmin(formData);
 
-      // Store token and user data
-      localStorage.setItem('token', response.token);
-      localStorage.setItem('user', JSON.stringify({
-        role: 'admin',
-        email: formData.email,
-        ...response.user
-      }));
+      // Store token and user data (response has user fields at root)
+      if (response.token) {
+        localStorage.setItem('token', response.token);
+      }
+      const userData = {
+        role: response.role || 'admin',
+        email: response.email || formData.email,
+        name: response.name || '',
+        _id: response._id || null
+      };
+      localStorage.setItem('user', JSON.stringify(userData));
 
       // Navigate to admin dashboard
       navigate('/dashboard/admin');
