@@ -1,8 +1,11 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 
-// Generate JWT Token
+// Generate JWT Token (validate secret)
 const generateToken = (id) => {
+    if (!process.env.JWT_SECRET) {
+        throw new Error('JWT_SECRET is not defined');
+    }
     return jwt.sign({ id }, process.env.JWT_SECRET, {
         expiresIn: '30d',
     });
@@ -78,22 +81,29 @@ const registerStudent = async (req, res) => {
 // @route   POST /api/users/admin/login
 // @access  Public
 const loginAdmin = async (req, res) => {
-    const { email, password } = req.body;
-    console.log('Login Admin Attempt:', { email, password });
+    try {
+        const { email, password } = req.body;
+        console.log('Login Admin Attempt:', { email });
 
-    const user = await User.findOne({ email });
-    console.log('User found:', user ? 'Yes' : 'No');
+        const user = await User.findOne({ email });
+        console.log('User found:', user ? 'Yes' : 'No');
 
-    if (user) {
-        const isMatch = await user.matchPassword(password);
+        const isMatch = user ? await user.matchPassword(password) : false;
         console.log('Password match:', isMatch);
-        console.log('User role:', user.role);
-    }
+        if (!user || !isMatch) {
+            return res.status(401).json({ message: 'Invalid email or password' });
+        }
 
-    if (user && (await user.matchPassword(password))) {
         if (user.role !== 'admin') {
             return res.status(401).json({ message: 'Invalid role. Please login as Student.' });
         }
+
+        // Ensure JWT secret exists before signing
+        if (!process.env.JWT_SECRET) {
+            console.error('JWT_SECRET missing in environment');
+            return res.status(500).json({ message: 'Server misconfiguration: authentication unavailable' });
+        }
+
         res.json({
             _id: user._id,
             name: user.name,
@@ -101,8 +111,9 @@ const loginAdmin = async (req, res) => {
             role: user.role,
             token: generateToken(user._id),
         });
-    } else {
-        res.status(401).json({ message: 'Invalid email or password' });
+    } catch (error) {
+        console.error('Login admin error:', error.message || error);
+        res.status(500).json({ message: 'Internal server error' });
     }
 };
 
