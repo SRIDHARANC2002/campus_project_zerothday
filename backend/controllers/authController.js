@@ -112,6 +112,12 @@ const loginAdmin = async (req, res) => {
 const registerAdmin = async (req, res) => {
     const { name, email, password, adminLevel } = req.body;
 
+    // If an admin already exists and registration is not explicitly allowed, block it
+    const adminExists = await User.findOne({ role: 'admin' });
+    if (adminExists && process.env.ALLOW_ADMIN_REGISTRATION !== 'true') {
+        return res.status(403).json({ message: 'Admin registration is disabled' });
+    }
+
     const userExists = await User.findOne({ email });
 
     if (userExists) {

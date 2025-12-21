@@ -9,6 +9,12 @@ dotenv.config();
 // Connect to database
 connectDB();
 
+// Optionally seed an admin on startup when SEED_ADMIN_ON_START is set to 'true'
+if (process.env.SEED_ADMIN_ON_START === 'true') {
+  const { seedAdmin } = require('./seedAdmin');
+  seedAdmin().catch((err) => console.error('Admin seed failed on startup:', err.message || err));
+}
+
 const app = express();
 
 // Middleware
