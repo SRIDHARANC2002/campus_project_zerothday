@@ -81,7 +81,7 @@ const LoginPage = () => {
         </Card>
 
         <Typography variant="body2" color="text.secondary" align="center" sx={{ mt: 3 }}>
-          © 2024 CampusLink System
+          © @ 2026 CampusLink System
         </Typography>
       </Container>
     </Box>
